@@ -7,17 +7,6 @@ pub(crate) fn bake()
    let atlas_size = consts::ATLAS_SIZE;
    let mut atlas_image: RgbaImage = RgbaImage::new(atlas_size,atlas_size);
    
-   for (x,y,pixel) in atlas_image.enumerate_pixels_mut() { //just for testing
-      if y % 2 == 0
-      {
-         if x % 2 == 0 {*pixel = Rgba([255,255,255,100]);}
-         if x % 2 == 1 {*pixel = Rgba([0,0,0,100]);}
-      }
-      else {
-         if x % 2 == 1 {*pixel = Rgba([255,255,255,100]);}
-         if x % 2 == 0 {*pixel = Rgba([0,0,0,100]);}
-      }
-   }
    let packs_paths: ReadDir = fs::read_dir(consts::CRATE_PACKS_PATH).unwrap();
    
    for texture_packs in packs_paths {
