@@ -8,5 +8,5 @@ pub(crate) const PACK_DIR_WIN: &str = r"/AppData/Roaming/.minecraft/resourcepack
 pub(crate) const ASSETS_TEX_DIR: &str = r"/assets/minecraft/textures/block/";
 pub(crate) const CRATE_PACKS_PATH: &str = r"./packs/";
 
-pub(crate) const ATLAS_SIZE: u32 = 768;
+pub(crate) const ATLAS_SIZE: u32 = 1024;
 
