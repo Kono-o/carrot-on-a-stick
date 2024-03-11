@@ -1,16 +1,25 @@
-mod consts;
+mod global;
 mod packs;
-mod log;
 mod atlas;
+use std::io;
 
 fn main() {
-    log::console(String::from(consts::CRATE_NAME));
-    if false //testing
-    {
-        match packs::get(){
-            Some(error_code) => log::console(format!("error code [{}]", error_code)),
-            _ => log::console(String::from("all resource packs successfully retrieved!"))
+    println!("{}", global::CRATE_NAME);
+
+    println!("1> packs 2> atlas");
+    let mut sel = String::new();
+    io::stdin()
+        .read_line(&mut sel)
+        .expect("io error");
+
+    let sel: u32 = sel.trim().parse().unwrap();
+    if sel == 1 {
+        let code = packs::get_from_mc_folder();
+        match code{
+            0 => println!("packs-> success!"),
+            _ => println!("packs-> error[{}]!",code)
         }
     }
-    atlas::bake();
+    else { atlas::bake(); }
+
 }

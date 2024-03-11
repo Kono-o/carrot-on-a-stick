@@ -1,40 +1,53 @@
-use std::{fs::ReadDir,fs,path::{Path, PathBuf}};
+use std::{fs::ReadDir,fs,path::PathBuf};
 use image::{DynamicImage, GenericImageView, Rgba, RgbaImage};
-use crate::consts;
+use concat_string::concat_string;
+use crate::global;
 
-pub(crate) fn bake()
+pub fn bake()
 {
-   let atlas_size = consts::ATLAS_SIZE;
-   let mut atlas_image: RgbaImage = RgbaImage::new(atlas_size,atlas_size);
+   let mut atlas_image: RgbaImage = RgbaImage::new(global::ATLAS_SIZE, global::ATLAS_SIZE);
+   let mut memory: Vec<bool> = vec![false; global::TEX_LIST.len()];
+   let packs: ReadDir = fs::read_dir(global::CRATE_PACKS_PATH).unwrap();
    
-   let packs_paths: ReadDir = fs::read_dir(consts::CRATE_PACKS_PATH).unwrap();
-   
-   for texture_packs in packs_paths {
-      let texture_packs = texture_packs.unwrap().path();
-      let blocks_path = format!("{}{}", texture_packs.to_str().unwrap(), consts::ASSETS_TEX_DIR);
-      if !Path::new(&blocks_path).exists() {continue};
-      
-      let textures: ReadDir = fs::read_dir(blocks_path).unwrap();
-      
-      for (i,texture) in textures.enumerate() {
-         let texture:PathBuf = texture.unwrap().path();
-         
-         if texture.extension() == Some("png".as_ref()) {
-            let texture:DynamicImage = image::open(texture).unwrap();
-            
-            for(x,y,_pixel) in texture.to_rgba8().enumerate_pixels() {
-               if x >= 16 || y >= 16 {continue};
-               let mut x_off: u32 = ((i as u32) * 16) + x;
-               let y_off: u32 = (x_off/atlas_size)*16 + y;
-               x_off = x_off  % atlas_size;
-               
-               if (x_off,y_off) >= (atlas_size,atlas_size) {continue};
-               
-               let texture_pixel: Rgba<u8> = texture.get_pixel(x,y);
-               atlas_image.put_pixel(x_off, y_off, texture_pixel);
-            }
+   for pack in packs {
+      let pack: PathBuf = pack.unwrap().path();
+      let block_path: PathBuf = concat_block_path(&pack);
+      if !block_path.exists() { continue }
+      println!("baking {}", pack.file_stem().unwrap().to_str().unwrap());
+      for (i,tex_name) in global::TEX_LIST.iter().enumerate() {
+         let mut texture_path: PathBuf = block_path.clone();
+         texture_path.push(concat_string!(tex_name, ".png"));
+
+         let texture_image: DynamicImage;
+         if !texture_path.exists() { texture_image = image::open("./packs/missing.png").unwrap() }
+         else { texture_image = image::open(texture_path.clone()).unwrap(); }
+
+         if memory[i] { continue }
+         if !memory[i] && texture_path.exists() { memory[i] = true; }
+
+         for(x,y,_pixel) in texture_image.to_rgba8().enumerate_pixels() {
+            if x >= global::TEX_SIZE || y >= global::TEX_SIZE { continue }
+            let mut x_off: u32 = ((i as u32) * global::TEX_SIZE) + x;
+            let y_off: u32 = (x_off/ global::ATLAS_SIZE) * global::TEX_SIZE + y;
+            x_off = x_off  % global::ATLAS_SIZE;
+
+            if (x_off,y_off) >= (global::ATLAS_SIZE, global::ATLAS_SIZE) { continue }
+
+            let texture_pixel: Rgba<u8> = texture_image.get_pixel(x, y);
+            atlas_image.put_pixel(x_off, y_off, texture_pixel);
          }
       }
    }
-   atlas_image.save(format!("{}{}",consts::CRATE_PACKS_PATH, "atlas.png")).unwrap();
+   atlas_image.save(format!("{}{}", global::CRATE_PACKS_PATH, "blocks.png")).unwrap();
+   println!("blocks.png saved!");
+}
+
+fn concat_block_path(path: &PathBuf) -> PathBuf {
+   let mut java_block_path = path.clone();
+   java_block_path.push(global::TEXTURES_DIRS[0]);
+   if java_block_path.exists() { return java_block_path; }
+
+   let mut bedrock_block_path = path.clone();
+   bedrock_block_path.push(global::TEXTURES_DIRS[1]);
+   return bedrock_block_path;
 }
