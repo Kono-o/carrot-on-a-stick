@@ -23,9 +23,10 @@ pub const TEX_SIZE: u32 = 16;
 pub const TILE_SIZE: u32 = TEX_SIZE + 2;
 pub const ATLAS_SIZE: u32 = TILE_SIZE * 64;
 
-pub const TEX_LIST: [&str; 180] = [
+pub const TEX_LIST: [&str; 181] = [
 "grass_block_top",
 "stone",
+"dirt",
 "grass_block_side",
 "oak_planks",
 "smooth_stone_slab_side",
