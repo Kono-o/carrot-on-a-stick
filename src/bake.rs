@@ -17,14 +17,14 @@ pub fn bake()
       for (i,tex_name) in global::TEX_LIST.iter().enumerate() {
          let mut texture_path: PathBuf = block_path.clone();
          texture_path.push(concat_string!(tex_name, ".png"));
-
+         
          let texture_image: DynamicImage;
          if !texture_path.exists() { texture_image = image::open("./packs/missing.png").unwrap() }
          else { texture_image = image::open(texture_path.clone()).unwrap(); }
-
+         
          if memory[i] { continue }
          if !memory[i] && texture_path.exists() { memory[i] = true; }
-
+         
          let texture_image = add_borders(texture_image);
          
          for(x,y,_pixel) in texture_image.enumerate_pixels() {
@@ -32,9 +32,9 @@ pub fn bake()
             let mut x_off: u32 = ((i as u32) * global::TILE_SIZE) + x;
             let y_off: u32 = (x_off/ global::ATLAS_SIZE) * global::TILE_SIZE + y;
             x_off = x_off  % global::ATLAS_SIZE;
-
+            
             if (x_off,y_off) >= (global::ATLAS_SIZE, global::ATLAS_SIZE) { continue }
-
+            
             let texture_pixel: Rgba<u8> = *texture_image.get_pixel(x, y);
             atlas_image.put_pixel(x_off, y_off, texture_pixel);
          }
@@ -48,7 +48,7 @@ fn concat_block_path(path: &PathBuf) -> PathBuf {
    let mut java_block_path = path.clone();
    java_block_path.push(global::TEXTURES_DIRS[0]);
    if java_block_path.exists() { return java_block_path; }
-
+   
    let mut bedrock_block_path = path.clone();
    bedrock_block_path.push(global::TEXTURES_DIRS[1]);
    return bedrock_block_path;
