@@ -5,7 +5,7 @@ use crate::global;
 
 pub fn bake()
 {
-   let mut atlas_image: RgbaImage = RgbaImage::new(global::ATLAS_SIZE, global::ATLAS_SIZE);
+   let mut atlas_image: RgbaImage = RgbaImage::new(global::ATLAS_SIZE_POT, global::ATLAS_SIZE_POT);
    let mut memory: Vec<bool> = vec![false; global::TEX_LIST.len()];
    let packs: ReadDir = fs::read_dir(global::CRATE_PACKS_PATH).unwrap();
    
