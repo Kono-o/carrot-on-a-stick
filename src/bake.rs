@@ -58,8 +58,19 @@ fn add_borders(image: DynamicImage) -> RgbaImage {
    image.to_rgba8();
    let mut new_image: RgbaImage = RgbaImage::new(global::TILE_SIZE,global::TILE_SIZE);
    for (x,y,pixel) in new_image.enumerate_pixels_mut() {
-      if x == 0 || y == 0 || x == global::TILE_SIZE-1 || y == global::TILE_SIZE-1 { continue }
-      *pixel = image.get_pixel(x-1,y-1)
+      if x == 0 {
+      
+      }
+      if y == 0 {
+         *pixel = image.get_pixel(x+1,y);
+      }
+      if x == global::TILE_SIZE-1 {
+      
+      }
+      if y == global::TILE_SIZE-1 {
+      
+      }
+      else { *pixel = image.get_pixel(x-1,y-1) };
    }
    return new_image;
 }
