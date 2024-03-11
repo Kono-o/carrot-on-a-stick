@@ -42,8 +42,7 @@ fn unzip_and_copy_packs(dirs: ReadDir) {
          }
       }
       else if path_extension == Some("zip".as_ref()) || path_extension == Some("mcpack".as_ref()) {
-         let zip = fs::File::open(&path).unwrap();
-         let _ = zip::ZipArchive::new(zip).unwrap().extract(&output_path);
+         let _ = zip::ZipArchive::new(fs::File::open(&path).unwrap()).unwrap().extract(&output_path);
          println!("unzipped and copied {}", &path_name);
       }
    }
