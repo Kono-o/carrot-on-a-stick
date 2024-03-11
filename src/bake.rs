@@ -28,7 +28,7 @@ pub fn bake()
          let texture_image = add_borders(texture_image);
          
          for(x,y,_pixel) in texture_image.enumerate_pixels() {
-            if x >= global::TEX_SIZE || y >= global::TEX_SIZE { continue }
+            if x >= global::TILE_SIZE || y >= global::TILE_SIZE { continue }
             let mut x_off: u32 = ((i as u32) * global::TILE_SIZE) + x;
             let y_off: u32 = (x_off/ global::ATLAS_SIZE) * global::TILE_SIZE + y;
             x_off = x_off  % global::ATLAS_SIZE;
@@ -58,19 +58,19 @@ fn add_borders(image: DynamicImage) -> RgbaImage {
    image.to_rgba8();
    let mut new_image: RgbaImage = RgbaImage::new(global::TILE_SIZE,global::TILE_SIZE);
    for (x,y,pixel) in new_image.enumerate_pixels_mut() {
-      if x == 0 {
-      
+      println!("x{} y{}", x,y);
+      if x != 0 && y != 0 && x < global::TILE_SIZE-1 && y < global::TILE_SIZE-1 {
+         *pixel = image.get_pixel(x-1,y-1);
       }
-      if y == 0 {
-         *pixel = image.get_pixel(x+1,y);
+      if y > 0 && y < global::TILE_SIZE-1 {
+         if x == 0 { *pixel = image.get_pixel(0,y-1); }
+         if x == global::TILE_SIZE-1 { *pixel = image.get_pixel(global::TEX_SIZE-1,y-1); }
       }
-      if x == global::TILE_SIZE-1 {
-      
+      if x > 0 && x < global::TILE_SIZE-1 {
+         if y == 0 { *pixel = image.get_pixel(x-1,0); }
+         if y == global::TILE_SIZE-1 { *pixel = image.get_pixel(x-1,global::TEX_SIZE-1); }
       }
-      if y == global::TILE_SIZE-1 {
-      
-      }
-      else { *pixel = image.get_pixel(x-1,y-1) };
    }
+   
    return new_image;
 }
