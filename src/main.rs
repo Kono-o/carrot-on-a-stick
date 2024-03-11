@@ -1,6 +1,6 @@
 mod global;
 mod packs;
-mod atlas;
+mod bake;
 use std::io;
 
 fn main() {
@@ -20,6 +20,6 @@ fn main() {
             _ => println!("packs-> error[{}]!",code)
         }
     }
-    else { atlas::bake(); }
+    else { bake::bake(); }
 
 }

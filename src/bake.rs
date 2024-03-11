@@ -25,15 +25,17 @@ pub fn bake()
          if memory[i] { continue }
          if !memory[i] && texture_path.exists() { memory[i] = true; }
 
-         for(x,y,_pixel) in texture_image.to_rgba8().enumerate_pixels() {
+         let texture_image = add_borders(texture_image);
+         
+         for(x,y,_pixel) in texture_image.enumerate_pixels() {
             if x >= global::TEX_SIZE || y >= global::TEX_SIZE { continue }
-            let mut x_off: u32 = ((i as u32) * global::TEX_SIZE) + x;
-            let y_off: u32 = (x_off/ global::ATLAS_SIZE) * global::TEX_SIZE + y;
+            let mut x_off: u32 = ((i as u32) * global::TILE_SIZE) + x;
+            let y_off: u32 = (x_off/ global::ATLAS_SIZE) * global::TILE_SIZE + y;
             x_off = x_off  % global::ATLAS_SIZE;
 
             if (x_off,y_off) >= (global::ATLAS_SIZE, global::ATLAS_SIZE) { continue }
 
-            let texture_pixel: Rgba<u8> = texture_image.get_pixel(x, y);
+            let texture_pixel: Rgba<u8> = *texture_image.get_pixel(x, y);
             atlas_image.put_pixel(x_off, y_off, texture_pixel);
          }
       }
@@ -50,4 +52,14 @@ fn concat_block_path(path: &PathBuf) -> PathBuf {
    let mut bedrock_block_path = path.clone();
    bedrock_block_path.push(global::TEXTURES_DIRS[1]);
    return bedrock_block_path;
+}
+
+fn add_borders(image: DynamicImage) -> RgbaImage {
+   image.to_rgba8();
+   let mut new_image: RgbaImage = RgbaImage::new(global::TILE_SIZE,global::TILE_SIZE);
+   for (x,y,pixel) in new_image.enumerate_pixels_mut() {
+      if x == 0 || y == 0 || x == global::TILE_SIZE-1 || y == global::TILE_SIZE-1 { continue }
+      *pixel = image.get_pixel(x-1,y-1)
+   }
+   return new_image;
 }

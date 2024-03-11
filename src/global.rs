@@ -20,10 +20,11 @@ pub const TEXTURES_DIRS: [&str;2] = [
 ];
 
 pub const TEX_SIZE: u32 = 16;
-pub const ATLAS_SIZE: u32 = TEX_SIZE * 64;
+pub const TILE_SIZE: u32 = TEX_SIZE + 2;
+pub const ATLAS_SIZE: u32 = TILE_SIZE * 64;
 
 pub const TEX_LIST: [&str; 180] = [
-    "grass_block_top",
+"grass_block_top",
 "stone",
 "grass_block_side",
 "oak_planks",
