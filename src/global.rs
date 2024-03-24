@@ -24,7 +24,7 @@ pub const TILE_SIZE: u32 = TEX_SIZE + 2;
 pub const ATLAS_SIZE_POT: u32 = 1024;
 pub const ATLAS_SIZE: u32 = (ATLAS_SIZE_POT/TILE_SIZE) * TILE_SIZE;
 
-pub const TEX_LIST: [&str; 196] = [
+pub const TEX_LIST: [&str; 195] = [
 "grass_block_top",
 "stone",
 "dirt",
@@ -52,7 +52,6 @@ pub const TEX_LIST: [&str; 196] = [
 "red_mushroom",
 "brown_mushroom",
 "jungle_sapling",
-"&fire",
 "gold_ore",
 "iron_ore",
 "coal_ore",

@@ -14,18 +14,25 @@ pub fn bake()
       let block_path: PathBuf = concat_block_path(&pack);
       if !block_path.exists() { continue }
       println!("baking {}", pack.file_stem().unwrap().to_str().unwrap());
+
+      let bl = block_path.clone();
+      for blocks in fs::read_dir(bl).unwrap() {
+         let b = blocks.unwrap().path().file_name().unwrap().to_str().unwrap();
+
+         println!("{:?},", b);
+      }
       for (i,tex_name) in global::TEX_LIST.iter().enumerate() {
          let mut texture_path: PathBuf = block_path.clone();
          texture_path.push(concat_string!(tex_name, ".png"));
          
-         let texture_image: DynamicImage;
+         let mut texture_image: DynamicImage;
          if !texture_path.exists() { texture_image = image::open("./packs/missing.png").unwrap() }
          else { texture_image = image::open(texture_path.clone()).unwrap(); }
          
          if memory[i] { continue }
          if !memory[i] && texture_path.exists() { memory[i] = true; }
          
-         let texture_image = add_borders(texture_image);
+         let texture_image = add_borders(&mut texture_image);
          
          for(x,y,_pixel) in texture_image.enumerate_pixels() {
             if x >= global::TILE_SIZE || y >= global::TILE_SIZE { continue }
@@ -54,7 +61,7 @@ fn concat_block_path(path: &PathBuf) -> PathBuf {
    return bedrock_block_path;
 }
 
-fn add_borders(image: DynamicImage) -> RgbaImage {
+fn add_borders(image: &mut DynamicImage) -> RgbaImage {
    image.to_rgba8();
    let mut new_image: RgbaImage = RgbaImage::new(global::TILE_SIZE,global::TILE_SIZE);
    for (x,y,pixel) in new_image.enumerate_pixels_mut() {
