@@ -1,6 +1,6 @@
 use std::{fs::ReadDir,fs,path::PathBuf};
-use image::{DynamicImage, GenericImageView, Rgba, RgbaImage};
 use concat_string::concat_string;
+use image::{DynamicImage, GenericImageView, Rgba, RgbaImage};
 use crate::global;
 
 pub fn bake()
@@ -15,12 +15,6 @@ pub fn bake()
       if !block_path.exists() { continue }
       println!("baking {}", pack.file_stem().unwrap().to_str().unwrap());
 
-      let bl = block_path.clone();
-      for blocks in fs::read_dir(bl).unwrap() {
-         let b = blocks.unwrap().path().file_name().unwrap().to_str().unwrap();
-
-         println!("{:?},", b);
-      }
       for (i,tex_name) in global::TEX_LIST.iter().enumerate() {
          let mut texture_path: PathBuf = block_path.clone();
          texture_path.push(concat_string!(tex_name, ".png"));
@@ -31,7 +25,10 @@ pub fn bake()
          
          if memory[i] { continue }
          if !memory[i] && texture_path.exists() { memory[i] = true; }
-         
+
+         if texture_image.dimensions() > (global::TEX_SIZE,global::TEX_SIZE) {
+            texture_image = texture_image.crop(0,0,global::TEX_SIZE,global::TEX_SIZE)
+         }
          let texture_image = add_borders(&mut texture_image);
          
          for(x,y,_pixel) in texture_image.enumerate_pixels() {
@@ -62,24 +59,41 @@ fn concat_block_path(path: &PathBuf) -> PathBuf {
 }
 
 fn add_borders(image: &mut DynamicImage) -> RgbaImage {
-   image.to_rgba8();
+   let mut image = image.to_rgba8();
    let mut new_image: RgbaImage = RgbaImage::new(global::TILE_SIZE,global::TILE_SIZE);
-   for (x,y,pixel) in new_image.enumerate_pixels_mut() {
-      if x != 0 && y != 0 && x < global::TILE_SIZE-1 && y < global::TILE_SIZE-1 {
-         *pixel = image.get_pixel(x-1,y-1);
+   let mut is_full_block = true;
+
+   for (x,y,pixel) in image.enumerate_pixels_mut(){
+      if x == 0 || y == 0 || x == global::TILE_SIZE-1 || y == global::TILE_SIZE-1 {
+         if *pixel == Rgba([0,0,0,0]) && is_full_block != false { is_full_block = false; }
       }
-      if y > 0 && y < global::TILE_SIZE-1 {
-         if x == 0 { *pixel = image.get_pixel(global::TEX_SIZE-1,y-1); }
-         if x == global::TILE_SIZE-1 { *pixel = image.get_pixel(0,y-1); }
-      }
-      if x > 0 && x < global::TILE_SIZE-1 {
-         if y == 0 { *pixel = image.get_pixel(x-1,global::TEX_SIZE-1); }
-         if y == global::TILE_SIZE-1 { *pixel = image.get_pixel(x-1,0); }
-      }
+      new_image.put_pixel(x+1,y+1,*pixel);
    }
-   new_image.put_pixel(global::TILE_SIZE-1, global::TILE_SIZE-1, *new_image.get_pixel(1, 1));
-   new_image.put_pixel(0, 0, *new_image.get_pixel(global::TILE_SIZE-2, global::TILE_SIZE-2));
-   new_image.put_pixel(global::TILE_SIZE-1, 0, *new_image.get_pixel(1, global::TILE_SIZE-2));
-   new_image.put_pixel(0, global::TILE_SIZE-1, *new_image.get_pixel(global::TILE_SIZE-2, 1));
+      for i in 1..global::TILE_SIZE-1{
+         if is_full_block {
+            new_image.put_pixel(0, i, *new_image.get_pixel(global::TILE_SIZE-2, i));
+            new_image.put_pixel(global::TILE_SIZE-1, i, *new_image.get_pixel(1, i));
+            new_image.put_pixel(i, 0, *new_image.get_pixel(i, global::TILE_SIZE-2));
+            new_image.put_pixel(i, global::TILE_SIZE-1, *new_image.get_pixel(i, 1));
+         }
+         else {
+            new_image.put_pixel(0, i, *new_image.get_pixel(1, i));
+            new_image.put_pixel(global::TILE_SIZE-1, i, *new_image.get_pixel(global::TILE_SIZE-2, i));
+            new_image.put_pixel(i, 0, *new_image.get_pixel(i, 1));
+            new_image.put_pixel(i, global::TILE_SIZE-1, *new_image.get_pixel(i, global::TILE_SIZE-2));
+         }
+   }
+   if is_full_block {
+      new_image.put_pixel(global::TILE_SIZE-1, global::TILE_SIZE-1, *new_image.get_pixel(1, 1));
+      new_image.put_pixel(0, 0, *new_image.get_pixel(global::TILE_SIZE-2, global::TILE_SIZE-2));
+      new_image.put_pixel(global::TILE_SIZE-1, 0, *new_image.get_pixel(1, global::TILE_SIZE-2));
+      new_image.put_pixel(0, global::TILE_SIZE-1, *new_image.get_pixel(global::TILE_SIZE-2, 1));
+   }
+   else {
+      new_image.put_pixel(global::TILE_SIZE-1, global::TILE_SIZE-1, *new_image.get_pixel(global::TILE_SIZE-2, global::TILE_SIZE-2));
+      new_image.put_pixel(0, 0, *new_image.get_pixel(1, 1));
+      new_image.put_pixel(global::TILE_SIZE-1, 0, *new_image.get_pixel(global::TILE_SIZE-2, 1));
+      new_image.put_pixel(0, global::TILE_SIZE-1, *new_image.get_pixel(1, global::TILE_SIZE-2));
+   }
    return new_image;
 }
