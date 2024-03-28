@@ -65,7 +65,7 @@ fn add_borders(image: &mut DynamicImage) -> RgbaImage {
 
    for (x,y,pixel) in image.enumerate_pixels_mut(){
       if x == 0 || y == 0 || x == global::TILE_SIZE-1 || y == global::TILE_SIZE-1 {
-         if *pixel == Rgba([0,0,0,0]) && is_full_block != false { is_full_block = false; }
+         if pixel.0[3] == 0 && is_full_block != false { is_full_block = false; }
       }
       new_image.put_pixel(x+1,y+1,*pixel);
    }
