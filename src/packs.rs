@@ -11,9 +11,9 @@ pub fn get_from_mc_folder() -> i32 {
       Some(path) => resourcepacks_dir = path,
       None => return 1
    }
-   match global::OS_NAME {
-      "linux" => resourcepacks_dir.push(global::RESOURCE_DIRS[0]),
-      "windows" => resourcepacks_dir.push(global::RESOURCE_DIRS[1]),
+   match global::OS {
+      "linux" => resourcepacks_dir.push(global::RESOURCEPACKS_PATHS[0]),
+      "windows" => resourcepacks_dir.push(global::RESOURCEPACKS_PATHS[1]),
       _ => return 2
    }
 
@@ -32,7 +32,7 @@ fn unzip_and_copy_packs(dirs: ReadDir) {
 
       if path_extension == None {
          let mut block_path = path.clone();
-         block_path.push(global::TEXTURES_DIRS[0]);
+         block_path.push(global::TEXTURES_PATHS[0]);
          if Path::new(&block_path).exists() {
             CopyBuilder::new(&path, Path::new(&output_path))
                .overwrite_if_newer(true)

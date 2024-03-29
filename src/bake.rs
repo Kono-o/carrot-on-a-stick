@@ -30,11 +30,11 @@ impl Pack {
 }
 
 fn is_valid_pack(path: &PathBuf) -> Option<(Edition, PathBuf)> {
-   let tex_dir: PathBuf = Path::join(path, global::TEXTURES_DIRS[0]);
+   let tex_dir: PathBuf = Path::join(path, global::TEXTURES_PATHS[0]);
    if Path::join(path, global::PACK_DESC_FILES[0]).exists() && tex_dir.exists() {
       return Some((Edition::Java, tex_dir));
    }
-   let tex_dir: PathBuf = Path::join(path, global::TEXTURES_DIRS[1]);
+   let tex_dir: PathBuf = Path::join(path, global::TEXTURES_PATHS[1]);
    if Path::join(path, global::PACK_DESC_FILES[1]).exists() && tex_dir.exists() {
       return Some((Edition::Bedrock, tex_dir));
    }
@@ -76,6 +76,7 @@ impl Atlas {
          }
          println!("baking {} ({:?}) -> {:?}", pack.name, pack.edition, self.map);
          for (n,texture) in global::TEX_LIST.iter().enumerate() {
+            println!("{}", texture);
             if self.mem[n] { continue }
             let texture_path: PathBuf = Path::join(&pack.tex_dir, concat_string!(texture, ".png"));
             let mut texture: DynamicImage;

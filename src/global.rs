@@ -1,24 +1,23 @@
 use std::env;
 
-pub const OS_NAME: &str = env::consts::OS;
+pub const OS: &str = env::consts::OS;
 
 pub const CRATE_NAME: &str = "carrot-on-a-stick";
 pub const CRATE_PACKS_PATH: &str = "./packs/";
 
-pub const RESOURCE_DIRS: [&str;2] = [
-//linux
-".minecraft/resourcepacks/",
-//windows
-"AppData/Roaming/.minecraft/resourcepacks/"
+pub const RESOURCEPACKS_PATHS: [&str;2] = [
+    //linux
+    ".minecraft/resourcepacks/",
+    //windows
+    "AppData/Roaming/.minecraft/resourcepacks/"
 ];
-
 pub const PACK_DESC_FILES: [&str;2] = [
     //java
     "pack.mcmeta",
     //bedrock
     "manifest.json"
 ];
-pub const TEXTURES_DIRS: [&str;2] = [
+pub const TEXTURES_PATHS: [&str;2] = [
     //java
     "assets/minecraft/textures/block/",
     //bedrock
