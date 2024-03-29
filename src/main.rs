@@ -20,6 +20,10 @@ fn main() {
             _ => println!("packs-> error[{}]!",code)
         }
     }
-    else { bake::bake(); }
+    else {
+        let mut color_image: bake::Atlas = bake::Atlas::new(2048, bake::Maps::Color);
+        color_image.bake();
+        color_image.save(global::CRATE_PACKS_PATH, "color.png");
+    }
 
 }
