@@ -12,17 +12,23 @@ pub const RESOURCE_DIRS: [&str;2] = [
 "AppData/Roaming/.minecraft/resourcepacks/"
 ];
 
+pub const PACK_DESC_FILES: [&str;2] = [
+    //java
+    "pack.mcmeta",
+    //bedrock
+    "manifest.json"
+];
 pub const TEXTURES_DIRS: [&str;2] = [
-//java
-"assets/minecraft/textures/block/",
-//bedrock
-"textures/blocks/"
+    //java
+    "assets/minecraft/textures/block/",
+    //bedrock
+    "textures/blocks/"
 ];
 
 pub const TEX_SIZE: u32 = 16;
 pub const TILE_SIZE: u32 = TEX_SIZE + 2;
-pub const ATLAS_SIZE_POT: u32 = 1024;
-pub const ATLAS_SIZE: u32 = (ATLAS_SIZE_POT/TILE_SIZE) * TILE_SIZE;
+pub const ATLAS_SIZE: u32 = 1024;
+pub const ATLAS_SPACE: u32 = (ATLAS_SIZE/TILE_SIZE) * TILE_SIZE;
 
 pub const TEX_LIST: [&str; 990] = [
     "acacia_door_bottom",
