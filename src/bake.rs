@@ -76,7 +76,6 @@ impl Atlas {
          }
          println!("baking {} ({:?}) -> {:?}", pack.name, pack.edition, self.map);
          for (n,texture) in global::TEX_LIST.iter().enumerate() {
-            println!("{}", texture);
             if self.mem[n] { continue }
             let texture_path: PathBuf = Path::join(&pack.tex_dir, concat_string!(texture, ".png"));
             let mut texture: DynamicImage;
