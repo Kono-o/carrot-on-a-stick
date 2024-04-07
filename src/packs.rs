@@ -24,10 +24,10 @@ fn copy_pack(dir: &PathBuf) {
     CopyBuilder::new(&dir, Path::new(&out_dir))
       .overwrite_if_newer(true).overwrite_if_size_differs(true)
       .run().unwrap();
-    log::print(&concat_string!("{} was copied to {}", pack_name, out_dir));
+    log::print(&concat_string!(pack_name, " was copied to ", out_dir));
   }
   else {
-    log::print(&concat_string!("{} has no block textures", pack_name));
+    log::print(&concat_string!(pack_name, " has no block textures"));
   }
   
 }
