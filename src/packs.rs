@@ -45,7 +45,6 @@ fn try_unzip(dir: &PathBuf, name: &str, ex: &str, out: &str) {
 
 fn is_valid_extension(exten: &str) -> bool {
   for extension in global::PACK_EXTENSIONS.iter() {
-    //println!("{} {} {}", exten, extension, exten.eq(*extension));
     if exten.eq(*extension) { return true }
   }
   false
