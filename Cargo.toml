@@ -1,13 +1,6 @@
 [package]
-name = "carrot-on-a-stick"
+name = "coren"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-dirs = "5.0.1"
-zip = "0.6.6"
-zip-extensions = "0.6.2"
-dircpy = "0.3.16"
-image = "0.25.0"
-concat-string = "1.0.1"
-rand = "0.8.5"
