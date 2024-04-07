@@ -9,17 +9,25 @@ pub(crate) const RESOURCEPACKS_PATHS: [&str;2] = [
   //windows
   "AppData/Roaming/.minecraft/resourcepacks/"
 ];
+
 pub(crate) const PACK_DESC_FILES: [&str;2] = [
   //java
   "pack.mcmeta",
   //bedrock
   "manifest.json"
 ];
+
+pub(crate) const PACK_EXTENSIONS: [&str;3] = [
+  "zip",
+  "rar",
+  "mcpack"
+];
+
 pub(crate) const TEXTURES_PATHS: [&str;2] = [
   //java
-  "assets/minecraft/textures/block/",
+  "assets/minecraft/textures/",
   //bedrock
-  "textures/blocks/"
+  "textures/"
 ];
 
 pub(crate) const TEX_SIZE: u32 = 16;

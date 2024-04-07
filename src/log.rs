@@ -1,6 +1,6 @@
-pub fn print(msg: &str){
+pub fn msg(msg: &str){
   println!("{}", msg);
 }
-pub fn eprint(err: &str){
-  println!("{}", err);
+pub fn err(err: &str){
+  eprintln!("{}", err);
 }

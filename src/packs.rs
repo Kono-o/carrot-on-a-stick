@@ -1,6 +1,7 @@
 use concat_string::concat_string;
 use std::{fs,fs::ReadDir,path::{Path, PathBuf}};
 use dircpy::*;
+use zip::ZipArchive;
 use crate::{global, log};
 
 pub fn iter_packs(packs_dir: &PathBuf) -> Result<(),&str> {
@@ -10,24 +11,42 @@ pub fn iter_packs(packs_dir: &PathBuf) -> Result<(),&str> {
   let packs: ReadDir = fs::read_dir(&packs_dir).unwrap();
   for pack in packs {
     let pack_dir = pack.unwrap().path();
-      copy_pack(&pack_dir);
+    let pack_name = pack_dir.file_stem().unwrap().to_str().unwrap();
+    let out_dir = concat_string!(global::PACKS_OUT_PATH,pack_name,"/");
+    match pack_dir.extension() {
+      Some(exten) => try_unzip(&pack_dir, &pack_name, &exten.to_str().unwrap(), &out_dir),
+      None => try_copy(&pack_dir, &pack_name, &out_dir),
+    }
   }
   Ok(())
 }
 
-fn copy_pack(dir: &PathBuf) {
-  let pack_name = dir.file_stem().unwrap().to_str().unwrap();
-  let pack_ex = dir.extension();
-  let dir = Path::new(dir).join(global::TEXTURES_PATHS[0]);
-  if dir.exists() {
-    let out_dir = concat_string!(global::PACKS_OUT_PATH,pack_name,"/");
-    CopyBuilder::new(&dir, Path::new(&out_dir))
-      .overwrite_if_newer(true).overwrite_if_size_differs(true)
-      .run().unwrap();
-    log::print(&concat_string!(pack_name, " was copied to ", out_dir));
+fn try_copy(dir: &PathBuf, name: &str, out: &str) {
+  let je_tex_dir = Path::new(dir).join(global::TEXTURES_PATHS[0]);
+  let be_tex_dir = Path::new(dir).join(global::TEXTURES_PATHS[1]);
+  if !(je_tex_dir.exists() || be_tex_dir.exists()) {
+    log::msg(&concat_string!(name, " has no textures"));
+    return;
   }
-  else {
-    log::print(&concat_string!(pack_name, " has no block textures"));
+  CopyBuilder::new(&dir, Path::new(out))
+    .overwrite_if_newer(true).overwrite_if_size_differs(true)
+    .run().unwrap();
+  log::msg(&concat_string!(name, " was copied to ", out));
+}
+
+fn try_unzip(dir: &PathBuf, name: &str, ex: &str, out: &str) {
+  if !is_valid_extension(ex) {
+    log::msg(&concat_string!(name, " is not a pack"));
+    return;
   }
-  
+  let _ = ZipArchive::new(fs::File::open(&dir).unwrap()).unwrap().extract(&out);
+  log::msg(&concat_string!(name, " was unzipped to ", out));
+}
+
+fn is_valid_extension(exten: &str) -> bool {
+  for extension in global::PACK_EXTENSIONS.iter() {
+    //println!("{} {} {}", exten, extension, exten.eq(*extension));
+    if exten.eq(*extension) { return true }
+  }
+  false
 }
