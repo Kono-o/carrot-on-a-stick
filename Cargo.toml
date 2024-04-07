@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+dirs = "5.0.1"
+dircpy = "0.3.16"
+concat-string = "1.0.1"
