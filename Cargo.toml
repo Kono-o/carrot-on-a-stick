@@ -1,11 +1,7 @@
 [package]
 name = "coren"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
-
-[lib]
-name = "coren"
-crate-type = ["rlib"]
 
 [dependencies]
 dirs = "5.0.1"
