@@ -1,39 +1,29 @@
+//==================================================
 pub(crate) const OS: &str = std::env::consts::OS;
-
 pub(crate) const NAME: &str = "coral-renderer";
-pub(crate) const PACKS_OUT_PATH: &str = "./packs/";
 
+pub(crate) const PACKS_DIR: &str = "./packs/";
+pub(crate) const ATLAS_DIR: &str = "./atlas/";
+
+/*==================================================*/
 pub(crate) const RESOURCEPACKS_PATHS: [&str;2] = [
-  //linux
-  ".minecraft/resourcepacks/",
-  //windows
-  "AppData/Roaming/.minecraft/resourcepacks/"
+  ".minecraft/resourcepacks/",//LINUX
+  "AppData/Roaming/.minecraft/resourcepacks/"//WINDOWS
 ];
-
-pub(crate) const PACK_DESC_FILES: [&str;2] = [
-  //java
-  "pack.mcmeta",
-  //bedrock
-  "manifest.json"
-];
-
-pub(crate) const PACK_EXTENSIONS: [&str;3] = [
-  "zip",
-  "rar",
-  "mcpack"
-];
-
+pub(crate) const PACK_FORMATS: [&str;3] = ["zip", "rar", "mcpack"];
 pub(crate) const TEXTURES_PATHS: [&str;2] = [
-  //java
-  "assets/minecraft/textures/",
-  //bedrock
-  "textures/"
+  "assets/minecraft/textures/",//JAVA
+  "textures/"//BEDROCK
 ];
-
+pub(crate) const PACK_DESC_FILES: [&str;2] = [
+  "pack.mcmeta",//JAVA
+  "manifest.json"//BEDROCK
+];
+/*==================================================*/
 pub(crate) const TEX_SIZE: u32 = 16;
 pub(crate) const TILE_SIZE: u32 = TEX_SIZE + 2;
 
-pub(crate) const TEX_LIST: [&str; 990] = [
+pub(crate) const BLOCK_TEX_LIST: [&str; 990] = [
   "acacia_door_bottom",
   "acacia_door_top",
   "acacia_leaves",
