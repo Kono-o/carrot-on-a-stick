@@ -2,13 +2,7 @@ use std::path::PathBuf;
 use concat_string::concat_string;
 use image::{ImageError, RgbaImage};
 
-use crate::{global, log};
-
-#[derive(Debug)]
-pub enum AtlasErr {
-    ImageErr(ImageError),
-    MissingDir
-}
+use crate::{consts, log};
 
 pub enum Map {
     Color,
@@ -16,6 +10,11 @@ pub enum Map {
     Rough,
     Emit,
     Normal
+}
+#[derive(Debug)]
+pub enum AtlasErr {
+    ImageErr(ImageError),
+    MissingDir
 }
 pub struct Atlas {
     image: RgbaImage,
@@ -28,8 +27,8 @@ impl Atlas {
     pub fn new(map: Map, size: u32) -> Self {
         Self {
             image: RgbaImage::new(size, size),
-            rows: size / global::TILE_SIZE,
-            mem: vec![false; global::BLOCK_TEX_LIST.len()],
+            rows: size / consts::TILE_SIZE,
+            mem: vec![false; consts::BLOCK_TEX_LIST.len()],
             map,
         }
     }
@@ -46,7 +45,7 @@ impl Atlas {
             Map::Emit => "emit",
             Map::Normal => "normal",
         };
-        let name_map_ex = concat_string!(name, "_", map, ".", global::IMAGE_FORMAT);
+        let name_map_ex = concat_string!(name, "_", map, ".", consts::IMAGE_FORMAT);
         let out_dir = PathBuf::from(dir).join(&name_map_ex);
         match self.image.save(out_dir) {
             Ok(..) => (),

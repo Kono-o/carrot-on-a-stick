@@ -4,7 +4,7 @@ use std::ffi::OsStr;
 use std::{fs, path::Path};
 use zip::ZipArchive;
 
-use crate::{global, log};
+use crate::{consts, log};
 
 #[derive(Debug)]
 pub enum PackErr {
@@ -25,7 +25,7 @@ pub fn get(packs_dir: &Path) -> Result<(), PackErr> {
         let pack_stem = pack_dir.file_stem().unwrap().to_str().unwrap();
 
         log::msg(&concat_string!("reading [", pack_name, "]..."));
-        let out_dir = concat_string!(global::PACKS_DIR, pack_stem, "/");
+        let out_dir = concat_string!(consts::PACKS_DIR, pack_stem, "/");
         check_and_copy(&pack_dir, &out_dir);
     }
     if is_empty {
@@ -46,8 +46,8 @@ fn check_and_copy(dir: &Path, out: &str) {
         }
         _ => {
             let (je_mcmeta, be_manif) = (
-                dir.join(global::PACK_DESC_FILES[0]),
-                dir.join(global::PACK_DESC_FILES[1]),
+                dir.join(consts::PACK_DESC_FILES[0]),
+                dir.join(consts::PACK_DESC_FILES[1]),
             );
             if je_mcmeta.exists() || be_manif.exists() {
                 CopyBuilder::new(&dir, out)
@@ -64,7 +64,7 @@ fn check_and_copy(dir: &Path, out: &str) {
 }
 
 fn is_zip(ex: &OsStr) -> bool {
-    for extension in global::PACK_FORMATS.iter() {
+    for extension in consts::PACK_FORMATS.iter() {
         if ex.eq(*extension) { return true; }
     }
     false

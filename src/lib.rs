@@ -1,6 +1,6 @@
-mod global;
+mod consts;
 
-pub mod log;
-pub mod packs;
+#[path = "log/log.rs"] pub mod log;
+#[path = "pack/pack.rs"] pub mod pack;
+#[path = "atlas/atlas.rs"] pub mod atlas;
 
-pub mod atlas;
