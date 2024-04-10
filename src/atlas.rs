@@ -4,6 +4,7 @@ use image::{ImageError, RgbaImage};
 
 use crate::{global, log};
 
+#[derive(Debug)]
 pub enum AtlasErr {
     ImageErr(ImageError),
     MissingDir
